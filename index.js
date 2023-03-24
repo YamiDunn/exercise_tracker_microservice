@@ -1,8 +1,10 @@
+const {nanoid} = require("nanoid");
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+
 
 app.use(cors());
 app.use("/public", express.static(`${process.cwd()}/public`));
@@ -21,20 +23,17 @@ app.listen(port, function () {
 
 app.get("/", function (req, res) {
   res.sendFile(process.cwd() + "/views/index.html");
-});
+})
 
 const user = [{ username: String, _id: Number }];
-var index = 0;
 
 app.route("/api/users").post((req, res, next) => {
   let userData = req.body.username;
-  
-  user.push({username: userData, _id: index+1});
-  index = index+1;
+  let gId = nanoid(20);
+  user.push({username: userData, _id: gId });
   res.json(user);
   next
 }).get((req, res) => {
-  
   res.json(user);
 });
 
