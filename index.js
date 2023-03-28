@@ -31,10 +31,9 @@ app.route("/api/users").post((req, res, next) => {
   let userData = req.body.username;
   let gId = nanoid(20);
   user.push({username: userData, _id: gId });
-  res.json(user);
-  next
-}).get((req, res) => {
-  res.json(user);
+  return res.json(user);
 });
 
-
+/*).get((req, res) => {
+  res.json(user);
+}*/
