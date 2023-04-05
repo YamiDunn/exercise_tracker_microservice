@@ -47,8 +47,9 @@ const getTime = (date) => {
   }
   return dateObj;
 };
+
 app.route("/api/users").post((req, res) => {
-  let userData = req.body.username;
+  let userData = String(req.body.username);
   let gId = nanoid(20);
   var cUser = { username: userData, _id: gId };
   user.push(cUser);
@@ -60,21 +61,37 @@ app.get("/api/users", (req, res) => {
 });
 
 app.route("/api/users/:_id/exercises").post((req, res) => {
-  let uid = req.body[":_id"];
+  let uid = req.body[':_id'];
   let desc = req.body.description;
-  let dur = req.body.duration;
+  let dur = Number(req.body.duration);
   let date = req.body.date;
+  console.log(uid, desc, dur, date);
   try {
     let index = user.findIndex((el) => el._id == uid);
+    console.log(index);
     if (index) {
       user[index].description = desc;
       user[index].duration = dur;
       let dateObj = getTime(date);
       user[index].date = dateObj;
-    } else {
-      console.log("id is not in the temp");
+      res.json({
+        _id: user[index]._id,
+        username: user[index].username,
+        date: user[index].date,
+        duration: user[index].duration,
+        description: user[index].description
+      });
+    } else if (index == 0) {
+      let firstObj = 0;
+      user[firstObj].description = desc;
+      user[firstObj].duration = dur;
+      let dateObj = getTime(date);
+      user[firstObj].date = dateObj;
+      res.json(user[firstObj]);
     }
-    return res.json(user[index]);
+    else {
+      console.log("Id not found");
+    }
   } catch (err) {
     console.log(err);
     res.json("id not founded, server error");
